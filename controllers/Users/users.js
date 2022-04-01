@@ -11,7 +11,7 @@ const getTokenFrom = request => {
   return null
 }
 
-
+// All Users
 usersRouter.get('/', async (request, response) => {
     // const users = await User.find({})
     const users = await User
@@ -21,7 +21,7 @@ usersRouter.get('/', async (request, response) => {
 
   // Users sign-up
 usersRouter.post('/sign-up', async (request, response) => {
-  const { username, name, password } = request.body
+  const { username, password } = request.body
 
   const existingUser = await User.findOne({ username })
   if (existingUser) {
@@ -35,13 +35,17 @@ usersRouter.post('/sign-up', async (request, response) => {
 
   const user = new User({
     username,
-    name,
     passwordHash,
   })
 
-  const savedUser = await user.save()
-
-  response.status(201).json(savedUser)
+  try {
+    const savedUser = await user.save()
+    response.status(201).json(savedUser)
+  } catch (error) {
+    return response.status(401).json({
+      error: 'Failed to create user.'
+    })
+  }
 })
 
 // Users Log-in
@@ -79,7 +83,12 @@ usersRouter.post('/log-in', async (request, response) => {
 usersRouter.put('/:id/change-username', async (request, response) => {
   const { username } = request.body
 
-  
+  if (username.length < 8) {
+    return response.status(400).json({
+      error: 'Username must be atleast 8 characters.'
+    })
+  }
+
   const updateUser = {
     username: username
   }
@@ -92,10 +101,16 @@ usersRouter.put('/:id/change-username', async (request, response) => {
     })
   }
 
-  await User.findByIdAndUpdate(request.params.id, updateUser, { new: true })
-  response.status(201).json({
-    message: 'Username updated'
-  })
+  try {
+    await User.findByIdAndUpdate(request.params.id, updateUser, { new: true })
+    response.status(201).json({
+      message: 'Username updated'
+    })
+  } catch (error) {
+    return response.status(401).json({
+      error: 'Failed to update username.'
+    })
+  }
 })
 
 // Update password
@@ -118,11 +133,16 @@ usersRouter.put('/:id/change-password', async (request, response) => {
     username: username,
     passwordHash: passwordHash
   }
-
-  await User.findByIdAndUpdate(request.params.id, updateUser, { new: true })
-  response.status(201).json({
-    message: 'Password updated'
+  try {
+    await User.findByIdAndUpdate(request.params.id, updateUser, { new: true })
+     response.status(201).json({
+     message: 'Password updated'
   })
+  } catch (error) {
+    return response.status(401).json({
+      error: 'Failed to update user password.'
+    })
+  }
 })
 
 module.exports = usersRouter
