@@ -6,6 +6,7 @@ const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
 const usersRouter = require('./controllers/Users/users')
+const profileRouter = require('./controllers/Profiles/profiles')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
@@ -31,7 +32,9 @@ app.use(express.json())
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
+
 app.use('/api/users', usersRouter)
+app.use('/api/profiles', profileRouter)
 
 // app.use(middleware.requestLogger)
 app.use(middleware.unknownEndpoint)

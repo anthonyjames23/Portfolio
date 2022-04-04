@@ -2,22 +2,38 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const usersRouter = require('express').Router()
 const User = require('../../models/Users/user')
+const Profile = require('../../models/Profiles/profile')
 
-const getTokenFrom = request => {
-  const authorization = request.get('Authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
+// const getTokenFrom = request => {
+//   const authorization = request.get('Authorization')
+//   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+//     return authorization.substring(7)
+//   }
+//   return null
+// }
 
-// All Users
-usersRouter.get('/', async (request, response) => {
-    // const users = await User.find({})
-    const users = await User
-    .find({}).populate('transactions',{ content: 1, date: 1 })
-    response.json(users)
-  })
+//All Users
+// usersRouter.get('/', async (request, response) => {
+//   try {
+//     const profiles = await User
+//       .find({})
+//       // .populate('profile', '', Profile) 
+//        response.json(profiles)
+//   } catch (error) {
+//     return response.status(401).json({
+//       error: 'Failed to retrieve profiles'
+//     })
+//   }
+// })
+
+usersRouter.get('', async (request, response) => {
+  const usersRouter = await User
+  .find({})
+  .populate('profile', 'firstName', Profile) 
+  response.json(usersRouter)
+})
+
+
 
   // Users sign-up
 usersRouter.post('/sign-up', async (request, response) => {

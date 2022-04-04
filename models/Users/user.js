@@ -2,10 +2,18 @@ const mongoose = require('mongoose')
 const { userConnection } = require('../../utils/connection')
 
 const userSchema = new mongoose.Schema({
-  username: String,
+  username: {
+    type: String,
+    minlength: 8,
+    required: true,
+    unique: true
+},
   name: String,
   passwordHash: String,
- 
+  profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Profile'
+    }
 })
 
 userSchema.set('toJSON', {

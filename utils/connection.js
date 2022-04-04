@@ -26,7 +26,9 @@ function makeNewConnection(uri) {
 }
 
 const userConnection = makeNewConnection('mongodb+srv://anthony:mongodb123@cluster0.0gxyg.mongodb.net/Users?retryWrites=true&w=majority')
+const profileConnection = makeNewConnection('mongodb+srv://anthony:mongodb123@cluster0.0gxyg.mongodb.net/Profile?retryWrites=true&w=majority')
 
 module.exports = {
-    userConnection
+    userConnection,
+    profileConnection
 };
